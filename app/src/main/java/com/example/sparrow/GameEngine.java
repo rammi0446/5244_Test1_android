@@ -136,23 +136,23 @@ public class GameEngine extends SurfaceView implements Runnable {
             }
         }
 
-//        //moving cat
-//
-//        if(CatMovingRight == true) {
-//            this.cat.setxPosition(this.cat.getxPosition() + 40);
-//            if(this.cat.getxPosition() >= this.screenWidth - 300)
-//            {
-//                CatMovingRight = false;
-//            }
-//        }
-//        if(CatMovingRight == false)
-//        {
-//            this.cat.setxPosition(this.cat.getxPosition() -40);
-//            if(this.cat.getxPosition()<=0)
-//            {
-//                CatMovingRight = true;
-//            }
-//        }
+        //moving cat
+
+        if(CatMovingRight == true) {
+            this.cat.setxPosition(this.cat.getxPosition() + 40);
+            if(this.cat.getxPosition() >= this.screenWidth - 300)
+            {
+                CatMovingRight = false;
+            }
+        }
+        if(CatMovingRight == false)
+        {
+            this.cat.setxPosition(this.cat.getxPosition() -40);
+            if(this.cat.getxPosition()<=0)
+            {
+                CatMovingRight = true;
+            }
+        }
     }
 
 
