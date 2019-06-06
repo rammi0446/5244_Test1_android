@@ -119,44 +119,22 @@ public class GameEngine extends SurfaceView implements Runnable {
     // Game Loop methods
     boolean CageMovingRight = true;
     boolean CatMovingRight = true;
+    boolean collision = false;
     public void updateGame() {
 
 
         //moving cage
-        if(CageMovingRight == true) {
-            this.cage.setxPosition(this.cage.getxPosition() + 40);
-            if(this.cage.getxPosition() >= this.screenWidth - 300)
-            {
-                CageMovingRight = false;
-            }
-        }
-        if(CageMovingRight == false)
-        {
-            this.cage.setxPosition(this.cage.getxPosition() -40);
-            if(this.cage.getxPosition()<=0)
-            {
-                CageMovingRight = true;
-            }
+        if(collision == false) {
+            movingcage();
         }
         cage.updateHitbox();
         //moving cat
+        if (collision == false) {
 
-        if(CatMovingRight == true) {
-            this.cat.setxPosition(this.cat.getxPosition() + 40);
-            if(this.cat.getxPosition() >= this.screenWidth - 300)
-            {
-                CatMovingRight = false;
-                this.sparrow.setyPosition(randY);
-            }
+            movingCat();
         }
-        if(CatMovingRight == false)
-        {
-            this.cat.setxPosition(this.cat.getxPosition() -40);
-            if(this.cat.getxPosition()<=0)
-            {
-                CatMovingRight = true;
-            }
-        }
+
+
         cat.updateHitbox();
         //moving bird
 
@@ -200,27 +178,69 @@ public class GameEngine extends SurfaceView implements Runnable {
 
             if(this.bullet.getHitbox().intersect(this.cage.getHitbox()))
             {
-                this.cage.setyPosition(this.cage.getxPosition() + 500);
+
+                this.cage.setyPosition(this.cat.getyPosition());
 
             }
-            if(this.cage.getHitbox().intersect(this.cat.getHitbox()))
-            {
-                score = "winner";
-                pauseGame();
+        if(this.cage.getHitbox().intersect(this.cat.getHitbox()))
+        {
+            score = "winner";
+//            this.cage.setxPosition(this.cage.getInitialX());
+//            this.cage.setyPosition(this.cage.getInitialY());
+            // pauseGame();
+            // canvas.drawText("you are :" + score , this.screenWidth/2,this.screenHeight/2,paintbrush);
+            collision = true;
 
-
-            }
-            else
-            {
-                  score = "looser";
-
-            }
+        }
+        else
+        {
+            score = "looser";
 
         }
 
 
 
 
+        }
+
+
+public void movingcage()
+{
+    if(CageMovingRight == true) {
+        this.cage.setxPosition(this.cage.getxPosition() + 40);
+        if(this.cage.getxPosition() >= this.screenWidth - 300)
+        {
+            CageMovingRight = false;
+        }
+    }
+    if(CageMovingRight == false)
+    {
+        this.cage.setxPosition(this.cage.getxPosition() -40);
+        if(this.cage.getxPosition()<=0)
+        {
+            CageMovingRight = true;
+        }
+    }
+}
+public void movingCat()
+{
+    if(CatMovingRight == true) {
+        this.cat.setxPosition(this.cat.getxPosition() + 40);
+        if(this.cat.getxPosition() >= this.screenWidth - 300)
+        {
+            CatMovingRight = false;
+            this.sparrow.setyPosition(randY);
+        }
+    }
+    if(CatMovingRight == false)
+    {
+        this.cat.setxPosition(this.cat.getxPosition() -40);
+        if(this.cat.getxPosition()<=0)
+        {
+            CatMovingRight = true;
+        }
+    }
+}
 
 
 
