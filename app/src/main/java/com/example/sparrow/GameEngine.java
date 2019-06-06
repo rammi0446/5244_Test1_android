@@ -47,6 +47,7 @@ public class GameEngine extends SurfaceView implements Runnable {
     Sprite sparrow;
     Sprite cat;
 
+
     int randX;
     int randY;
 
@@ -55,7 +56,7 @@ public class GameEngine extends SurfaceView implements Runnable {
     ArrayList<Square> bullets = new ArrayList<Square>();
 
     // GAME STATS
-    int score = 0;
+    String score = "hello";
 
     public GameEngine(Context context, int screenW, int screenH) {
         super(context);
@@ -75,7 +76,7 @@ public class GameEngine extends SurfaceView implements Runnable {
         this.VISIBLE_BOTTOM = (int) (this.screenHeight * 0.8);
         //create random number
         Random rand = new Random();
-        randX = rand.nextInt( this.screenWidth );
+        randX = rand.nextInt( this.screenWidth -20);
         if(randX > this.screenWidth)
         {
             randX -=  100;
@@ -84,7 +85,8 @@ public class GameEngine extends SurfaceView implements Runnable {
         {
             randX +=  100;
         }
-        randY = rand.nextInt(  this.screenHeight);
+
+        randY = rand.nextInt(  this.screenHeight - 20);
         if(randY > this.screenHeight)
         {
             randY -=  - 100;
@@ -102,6 +104,7 @@ public class GameEngine extends SurfaceView implements Runnable {
         this.sparrow = new Sprite(this.getContext(), randX, randY, R.drawable.bird64);
         this.cat = new Sprite(this.getContext(), this.screenWidth-600, this.screenHeight-600, R.drawable.cat64);
         this.cage = new Square(context, this.screenWidth-600, 100, 300);
+        this.bullet = new Square(context, 100, 700, 300);
     }
 
     @Override
@@ -118,7 +121,7 @@ public class GameEngine extends SurfaceView implements Runnable {
     boolean CatMovingRight = true;
     public void updateGame() {
 
-        cat.updateHitbox();
+
         //moving cage
         if(CageMovingRight == true) {
             this.cage.setxPosition(this.cage.getxPosition() + 40);
@@ -135,7 +138,7 @@ public class GameEngine extends SurfaceView implements Runnable {
                 CageMovingRight = true;
             }
         }
-
+        cage.updateHitbox();
         //moving cat
 
         if(CatMovingRight == true) {
@@ -143,6 +146,7 @@ public class GameEngine extends SurfaceView implements Runnable {
             if(this.cat.getxPosition() >= this.screenWidth - 300)
             {
                 CatMovingRight = false;
+                this.sparrow.setyPosition(randY);
             }
         }
         if(CatMovingRight == false)
@@ -153,7 +157,71 @@ public class GameEngine extends SurfaceView implements Runnable {
                 CatMovingRight = true;
             }
         }
-    }
+        cat.updateHitbox();
+        //moving bird
+
+        //    this.sparrow.setyPosition(randY);
+
+        //        this.sparrow.setyPosition(this.sparrow.getyPosition() + 40);
+        //sparrow.updateHitbox();
+
+        //hit the cage
+        //----------------------------------------------------
+        // 1. calculate distance between bullet and enemy
+        // 1. calculate distance between bullet and enemy
+
+
+            double a = this.touchX - bullet.getxPosition();
+            double b = this.touchY - bullet.getyPosition();
+
+
+            double d = Math.sqrt((a * a) + (b * b));
+
+            Log.d(TAG, "Distance to enemy: " + d);
+
+            // 2. calculate xn and yn constants
+            // (amount of x to move, amount of y to move)
+            double xn = (a / d) ;
+            double yn = (b / d) ;
+
+            // 3. calculate new (x,y) coordinates
+
+            int newX = bullet.getxPosition() + (int) (xn * 30);
+            int newY = bullet.getyPosition() + (int) (yn * 30);
+            bullet.setxPosition(newX);
+            bullet.setyPosition(newY);
+
+            // 4. update the hitbox position for enemy
+            this.bullet.updateHitbox();
+
+            Log.d(TAG, "----------");
+
+            // @TODO: Collision detection code
+
+            if(this.bullet.getHitbox().intersect(this.cage.getHitbox()))
+            {
+                this.cage.setyPosition(this.cage.getxPosition() + 500);
+
+            }
+            if(this.cage.getHitbox().intersect(this.cat.getHitbox()))
+            {
+                score = "winner";
+                pauseGame();
+
+
+            }
+            else
+            {
+                  score = "looser";
+
+            }
+
+        }
+
+
+
+
+
 
 
     public void outputVisibleArea() {
@@ -206,15 +274,26 @@ public class GameEngine extends SurfaceView implements Runnable {
                     this.cage.getyPosition()+ this.cage.getWidth(),
                     paintbrush
                     );
+
+            //draw bullet
+           canvas.drawRect(this.bullet.getxPosition(),
+                   this.bullet.getyPosition(),
+                   this.bullet.getxPosition() + this.bullet.getWidth(),
+                   this.bullet.getyPosition() + this.bullet.getWidth(),
+                   paintbrush);
+
             // --------------------------------------------------------
             // draw hitbox on player
             // --------------------------------------------------------
             Rect r = player.getHitbox();
             Rect c = cat.getHitbox();
+            Rect s = sparrow.getHitbox();
+            Rect b = bullet.getHitbox();
             paintbrush.setStyle(Paint.Style.STROKE);
             canvas.drawRect(r, paintbrush);
             canvas.drawRect(c,paintbrush);
-
+            canvas.drawRect(s,paintbrush);
+            canvas.drawRect(b,paintbrush);
 
             // --------------------------------------------------------
             // draw hitbox on player
@@ -241,10 +320,14 @@ public class GameEngine extends SurfaceView implements Runnable {
 
 
     // Deal with user input
+    int touchX;
+    int touchY;
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_UP:
+                touchX  = (int) event.getX();
+                touchY = (int) event.getY();
                 break;
             case MotionEvent.ACTION_DOWN:
                 break;
@@ -265,7 +348,7 @@ public class GameEngine extends SurfaceView implements Runnable {
     public void  resumeGame() {
         gameIsRunning = true;
         gameThread = new Thread(this);
-        gameThread.start();
+          gameThread.start();
     }
 
 }
