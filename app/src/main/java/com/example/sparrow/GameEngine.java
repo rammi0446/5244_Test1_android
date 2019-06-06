@@ -118,6 +118,7 @@ public class GameEngine extends SurfaceView implements Runnable {
 
     // Game Loop methods
     boolean CageMovingRight = true;
+   boolean BirdMovingRight = true;
     boolean CatMovingRight = true;
     boolean collision = false;
     public void updateGame() {
@@ -137,11 +138,11 @@ public class GameEngine extends SurfaceView implements Runnable {
 
         cat.updateHitbox();
         //moving bird
+        if(collision == false)
+        {
+        movingBird();
+        }
 
-        //    this.sparrow.setyPosition(randY);
-
-        //        this.sparrow.setyPosition(this.sparrow.getyPosition() + 40);
-        //sparrow.updateHitbox();
 
         //hit the cage
         //----------------------------------------------------
@@ -229,7 +230,7 @@ public void movingCat()
         if(this.cat.getxPosition() >= this.screenWidth - 300)
         {
             CatMovingRight = false;
-            this.sparrow.setyPosition(randY);
+
         }
     }
     if(CatMovingRight == false)
@@ -240,6 +241,28 @@ public void movingCat()
             CatMovingRight = true;
         }
     }
+}
+public void movingBird()
+{
+
+
+    if(BirdMovingRight == true) {
+        this.sparrow.setxPosition(this.sparrow.getxPosition() + 40);
+        if(this.sparrow.getxPosition() >= this.screenWidth - 300)
+        {
+            BirdMovingRight = false;
+            this.sparrow.setyPosition(randY);
+        }
+    }
+    if(BirdMovingRight == false)
+    {
+        this.sparrow.setxPosition(this.sparrow.getxPosition() -40);
+        if(this.sparrow.getxPosition()<=0)
+        {
+            BirdMovingRight = true;
+        }
+    }
+    sparrow.updateHitbox();
 }
 
 
