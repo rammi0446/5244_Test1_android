@@ -13,6 +13,7 @@ public class Sprite {
     // image
     Bitmap image;
 
+
     // make the hitbox
     Rect hitbox;
 
